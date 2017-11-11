@@ -18,6 +18,7 @@ def getPaths(pPath):    #recibe la ruta del fichero original y devuelve todas la
         for fil in onlyFiles:
             if fil.endswith(".htm"):
                 allPaths.append(x[0] + "/" + fil)
+    print(allPaths)
     return allPaths
     
 def examineFiles(pFilesList,pPath):
@@ -51,11 +52,7 @@ def examineFiles(pFilesList,pPath):
         if match:
             for word in match:
                 text.add(word)
-        print(text)
-        print("text-------------------------------------------------")
-        newText = removeStopWords(pPath,text)
-        print(newText)
-        print("newText----------------------------------------------")
+        return text
         
 def removeStopWords(pPath,pList):
     stopWords = []
@@ -72,8 +69,18 @@ def removeStopWords(pPath,pList):
             pass
     f.close()
     return pList
+
+def stemmer(pList):
+    stemmedWords = set([])
+    for word in pList:
+        stemmed = stemmer.stemWord(word)
+        dictionary.add(word)
     
 
 def main(pPath):
+    sWPath = input("Ingrese la ubicación del archivo de stopwords: \n")
+    print("entrando")
     files = getPaths(pPath)
-    examineFiles(files,pPath)
+    text = examineFiles(files,pPath)
+    textSW = removeStopWords(sWPath,text)
+    
