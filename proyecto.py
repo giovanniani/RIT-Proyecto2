@@ -10,6 +10,12 @@ from os import listdir
 from os.path import isfile, join
 import os
 import time
+import unicodedata
+
+def removeAccents(input_str):
+    nfkd_form = unicodedata.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
 
 def getPaths(pPath):    #recibe la ruta del fichero original y devuelve todas las rutas de los archivos ,htm
     allPaths = []
@@ -24,6 +30,7 @@ def examineFile(pFile):
     ref = set([])        #campo donde se guardan las referencias
     text = set([])       #campo donde se guardan los terminos
     texto = ""      #almacena todo el texto normal de la página, incluidas las referencias
+    ref2 = set([])
     f = open(pFile, "r")
     document = f.read()     
     document = document.decode('utf8')
@@ -48,8 +55,18 @@ def examineFile(pFile):
     match = re.findall(u'([a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]+)',texto)       #luego de obtenido el texto normal de la pagina se viene la depuración del mismo
     if match:
         for word in match:
+            word = word.replace(u"ñ","nnn")
+            word = removeAccents(word)
+            word = word.replace(u"nnn",u"ñ")
             text.add(word)
-    return text
+    for refe in ref:
+        match = re.findall(u'([a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]+)',refe)
+        for word in match:
+            word = word.replace(u"ñ","nnn")
+            word = removeAccents(word)
+            word = word.replace(u"nnn",u"ñ")
+            ref2.add(word)
+    return [text,ref2]
         
 def removeStopWords(pPath,pList):
     stopWords = []
@@ -74,7 +91,7 @@ def stemmer(pList):
         stemmedWords.add(word)
     return stemmedWords
 
-def saveDictionary(pFilePath,pList,pDicPath,pIndex):
+def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
     name = pFilePath.split("/")
     name = name[len(name)-1].split(".")[0]
     name = "D"+ str(pIndex) + "-" + name
@@ -86,6 +103,14 @@ def saveDictionary(pFilePath,pList,pDicPath,pIndex):
         f.write(data + ", ")
     data = list(pList)[len(pList)-1]
     data = data.encode('utf-8')
+    f.write(data + "\n")
+    f.write("ref\n")
+    for i in range(0,len(pRef)-2,1):
+        data = list(pRef)[i]
+        data = data.encode('utf-8')
+        f.write(data + ", ")
+    data = list(pRef)[len(pRef)-1]
+    data = data.encode('utf-8')
     f.write(data)
     f.close()
         
@@ -95,9 +120,9 @@ def main(pPath):
     files = getPaths(pPath)
     for fileDir in files:
         text = examineFile(fileDir)
-        textSW = removeStopWords(sWPath,text)
+        textSW = removeStopWords(sWPath,text[0])
         stemmed = stemmer(textSW)
-        saveDictionary(fileDir,stemmed,dicPath,files.index(fileDir))
+        saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
         
 
     
