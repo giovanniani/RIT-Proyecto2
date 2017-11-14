@@ -9,7 +9,7 @@ package query;
  *
  * @author Usuario
  */
-import apendix.LuceneConstants;
+import apendix.Constants;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,18 +37,18 @@ public class Searcher {
       FSDirectory.open(new File(indexDirectoryPath));
       indexSearcher = new IndexSearcher(indexDirectory);
       queryParser = new QueryParser(Version.LUCENE_36,
-         LuceneConstants.CONTENTS,
+         Constants.CONTENTS,
          new StandardAnalyzer(Version.LUCENE_36));
    }
 
    public TopDocs search( String searchQuery) 
       throws IOException, ParseException{
       query = queryParser.parse(searchQuery);
-      return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
+      return indexSearcher.search(query, Constants.MAX_SEARCH);
    }
    
    public TopDocs search(Query query) throws IOException, ParseException{
-      return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
+      return indexSearcher.search(query, Constants.MAX_SEARCH);
    }
 
    public Document getDocument(ScoreDoc scoreDoc) 

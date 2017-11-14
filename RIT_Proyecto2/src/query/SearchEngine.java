@@ -1,12 +1,13 @@
 package query;
 
-import apendix.LuceneConstants;
+import apendix.Constants;
 import apendix.TextFileFilter;
 import apendix.Routes;
 import index.Indexer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
@@ -14,54 +15,62 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
-public class LuceneTester {
+public class SearchEngine {
    Indexer indexer;
    Searcher searcher;
    
-   
-   public void index(String[] dirs){
-       for (String s:dirs){
-           
-       }
-   }
-   private void addToIndex(String dataDir) throws IOException{
-        int cantidad;
-        Routes.setDataDir(dataDir);
+   public SearchEngine()throws IOException{
         indexer = new Indexer(Routes.indexDir);
-
+   }
+   public int index(String[] dirs) throws IOException{
+       int cantidad=0;
+       for (String s:dirs){
+           //cantidad+=updateIndex(s);
+           proccessDir(s);
+       }
+       return cantidad;
+   }
+   private void proccessDir(String s){
+       //procesar el directorio ingresador y ponerlo en programData
+   }
+   private int updateIndex()throws IOException{
+        int cantidad;
         long inicio = System.currentTimeMillis();
+        //Routes.setDataDir(dataDir);
         cantidad = indexer.addToIndex(Routes.dataDir, new TextFileFilter());
         long fin = System.currentTimeMillis();
-        TextFileFilter s= new TextFileFilter();
-
-        indexer.close();
+        //indexer.close();
         long totalIndexacion=fin-inicio;
+        return cantidad;
    }
-   
-           
-    private void search(String query)
-        throws IOException, ParseException{
+    public ArrayList<ArrayList> search(String query)throws IOException, ParseException{
+       return TopDocsToArray(doSearch(query));
+    }
+    private TopDocs doSearch(String query) throws IOException, ParseException{
         searcher = new Searcher(Routes.indexDir);
-        Term term1 = new Term(LuceneConstants.CONTENTS, query);
-
         TopDocs hits = searcher.search(query);
-        long endTime = System.currentTimeMillis();
-
-        System.out.println(hits.totalHits +
-           " documents found. Time :" + (endTime - startTime) + "ms");
+        return hits;
+   }
+   public ArrayList<ArrayList> TopDocsToArray(TopDocs hits)throws IOException, ParseException{
+        ArrayList<String> docInfo= new ArrayList();
+        ArrayList<ArrayList> results= new ArrayList();
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
            Document doc = searcher.getDocument(scoreDoc);
+           
            System.out.print("Score: "+ scoreDoc.score + " ");
-           System.out.println("File: "+ doc.get(LuceneConstants.FILE_PATH));
+           System.out.println("File: "+ doc.get(Constants.FILE_PATH));
         }
         searcher.close();
+    
    }
+    
+    
       public static void main(String[] args) {
-	   LuceneTester tester;
+	   SearchEngine tester;
       
       try {
     	  
-    	  tester = new LuceneTester();
+    	  tester = new SearchEngine();
     	  tester.createIndex();
     	  //Search text here
     	  

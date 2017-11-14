@@ -21,7 +21,11 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-import apendix.LuceneConstants;
+import apendix.Constants;
+import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 public class Indexer {
     private IndexWriter writer;
     public Indexer(String indexDirectoryPath) throws IOException{
@@ -32,42 +36,43 @@ public class Indexer {
         new StandardAnalyzer(Version.LUCENE_36),true,
         IndexWriter.MaxFieldLength.UNLIMITED);
 
-        }
-    public void close() throws CorruptIndexException, IOException{
-        writer.close();
-        }
+    }
+    
     private Document getDocument(File file) throws IOException{
         Document document = new Document();
         //index file contents
+        String json=new String(Files.readAllBytes(Paths.get(file.getPath())));
+        Doc doc= new Doc(json);
+        Field textField = new Field(
+               Constants.TEXTO,
+               new StringReader(doc.texto));
         
-        Field contentField = new Field(
-               LuceneConstants.CONTENTS,
-               new FileReader(file));
+        Field refField = new Field(
+               Constants.TEXTO,
+               new StringReader(doc.texto));
         
         //index file name
-        Field fileNameField = new Field(
-               LuceneConstants.FILE_NAME,
-               file.getName(),
+        Field originalPath = new Field(
+               Constants.ORIGINAL_PATH,
+               doc.orifinalPath,
                Field.Store.YES,
                Field.Index.NOT_ANALYZED);
         //index file path
-        Field filePathField = new Field(
-               LuceneConstants.FILE_PATH,
-               file.getCanonicalPath(),
+        Field sourcePath = new Field(
+               Constants.SOURCE_PATH,
+               doc.sourcePath,
                Field.Store.YES,
-               Field.Index.ANALYZED);
+               Field.Index.NOT_ANALYZED);
         
-        document.add(contentField);
-        document.add(fileNameField);
-        document.add(filePathField);
-        document.add(new Field("TEMPORAL","",Field.Store.YES,Field.Index.ANALYZED));
+        document.add(textField);
+        document.add(refField);
+        document.add(originalPath);
+        document.add(sourcePath);
         return document;
         }
     private void indexFile(File file) throws IOException{
         System.out.println("Indexing "+file.getCanonicalPath());
         Document document = getDocument(file);
-        writer.addDocument(document);
-        document = getDocument(file);
         writer.addDocument(document);
     }
     public int addToIndex(String dataDirPath, FileFilter filter)
@@ -85,5 +90,8 @@ public class Indexer {
         }
         }
         return writer.numDocs();
+    }
+    public void close() throws CorruptIndexException, IOException{
+        writer.close();
     }
 }
