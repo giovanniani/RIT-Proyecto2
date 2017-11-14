@@ -111,8 +111,9 @@ def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
         f.write(data + ", ")
     data = list(pRef)[len(pRef)-1]
     data = data.encode('utf-8')
-    f.write(data)
+    f.write(data)    
     f.close()
+    print(pDicPath + "/" + name + "-dicionary.txt>"+pFilePath)
         
 def main(pPath):
     sWPath = input(u"Ingrese la ubicación del archivo de stopwords: \n")
