@@ -11,6 +11,7 @@ from os.path import isfile, join
 import os
 import time
 import unicodedata
+import json
 
 def removeAccents(input_str):
     nfkd_form = unicodedata.normalize('NFKD', input_str)
@@ -114,7 +115,29 @@ def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
     f.write(data)    
     f.close()
     print(pDicPath + "/" + name + "-dicionary.txt>"+pFilePath)
-        
+
+
+def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
+    
+    name = pFilePath.split("/")
+    name = name[len(name)-1].split(".")[0]
+    name = "D"+ str(pIndex) + "-" + name
+    wList = []
+    rList = []
+    for word in pList:
+        wList.append(word)
+    for wor in pRef:
+        rList.append(wor)
+    data = {
+   'name' : name,
+   'words' : wList,
+   'ref' : rList
+    }
+    with open(pDicPath + "/" + name + '.json', 'w') as f:
+        json.dump(data, f)
+    
+    
+
 def main(pPath):
     sWPath = input(u"Ingrese la ubicación del archivo de stopwords: \n")
     dicPath = input(u"Ingrese la ubicación donde se guardará los diccionarios de palabras: \n")
@@ -124,6 +147,7 @@ def main(pPath):
         textSW = removeStopWords(sWPath,text[0])
         stemmed = stemmer(textSW)
         saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
+        createJSON(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
         
 
     
