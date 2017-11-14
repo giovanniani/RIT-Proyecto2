@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lucene.fuzzy;
+package apendix;
 import java.io.File;
 import java.io.FileFilter;
 public class TextFileFilter implements FileFilter {

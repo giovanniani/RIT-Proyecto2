@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lucene.fuzzy;
+package query;
 
 /**
  *
  * @author Usuario
  */
+import apendix.LuceneConstants;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class Searcher {
 
    public Searcher(String indexDirectoryPath) throws IOException{
       Directory indexDirectory = 
-         FSDirectory.open(new File(indexDirectoryPath));
+      FSDirectory.open(new File(indexDirectoryPath));
       indexSearcher = new IndexSearcher(indexDirectory);
       queryParser = new QueryParser(Version.LUCENE_36,
          LuceneConstants.CONTENTS,
