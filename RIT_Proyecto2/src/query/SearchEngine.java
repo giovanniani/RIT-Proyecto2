@@ -24,10 +24,11 @@ public class SearchEngine {
    }
    public int index(String[] dirs) throws IOException{
        int cantidad=0;
-       for (String s:dirs){
+       /*for (String s:dirs){
            //cantidad+=updateIndex(s);
            proccessDir(s);
-       }
+       }*/
+       cantidad=updateIndex();
        return cantidad;
    }
    private void proccessDir(String s){
@@ -39,7 +40,7 @@ public class SearchEngine {
         //Routes.setDataDir(dataDir);
         cantidad = indexer.addToIndex(Routes.dataDir, new TextFileFilter());
         long fin = System.currentTimeMillis();
-        //indexer.close();
+        indexer.close();
         long totalIndexacion=fin-inicio;
         return cantidad;
    }
@@ -58,13 +59,13 @@ public class SearchEngine {
            Document doc = searcher.getDocument(scoreDoc);
            
            System.out.print("Score: "+ scoreDoc.score + " ");
-           System.out.println("File: "+ doc.get(Constants.FILE_PATH));
+           System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
         }
         searcher.close();
-    
+        return null;
    }
     
-    
+    /*
       public static void main(String[] args) {
 	   SearchEngine tester;
       
@@ -113,5 +114,5 @@ public class SearchEngine {
       } catch (ParseException e) {
          e.printStackTrace();
       }
-   }
+   }*/
 }
