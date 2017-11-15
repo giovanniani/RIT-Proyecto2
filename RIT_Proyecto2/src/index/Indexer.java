@@ -54,10 +54,10 @@ public class Indexer {
         //index file name
         Field originalPath = new Field(
                Constants.ORIGINAL_PATH,
-               doc.orifinalPath,
+               doc.originalPath,
                Field.Store.YES,
                Field.Index.NOT_ANALYZED);
-        //index file path
+        
         Field sourcePath = new Field(
                Constants.SOURCE_PATH,
                doc.sourcePath,

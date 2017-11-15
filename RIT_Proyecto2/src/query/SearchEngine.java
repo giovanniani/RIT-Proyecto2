@@ -52,6 +52,7 @@ public class SearchEngine {
         TopDocs hits = searcher.search(query);
         return hits;
    }
+    
    public ArrayList<ArrayList> TopDocsToArray(TopDocs hits)throws IOException, ParseException{
         ArrayList<String> docInfo= new ArrayList();
         ArrayList<ArrayList> results= new ArrayList();

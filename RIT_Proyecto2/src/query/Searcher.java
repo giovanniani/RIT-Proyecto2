@@ -37,14 +37,14 @@ public class Searcher {
       FSDirectory.open(new File(indexDirectoryPath));
       indexSearcher = new IndexSearcher(indexDirectory);
       queryParser = new QueryParser(Version.LUCENE_36,
-         Constants.CONTENTS,
+         Constants.TEXTO,
          new StandardAnalyzer(Version.LUCENE_36));
    }
 
    public TopDocs search( String searchQuery) 
       throws IOException, ParseException{
       query = queryParser.parse(searchQuery);
-      return indexSearcher.search(query, Constants.MAX_SEARCH);
+      return search(query);//indexSearcher.search(query, Constants.MAX_SEARCH);
    }
    
    public TopDocs search(Query query) throws IOException, ParseException{
