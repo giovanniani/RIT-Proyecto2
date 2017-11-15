@@ -122,19 +122,20 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
     name = pFilePath.split("/")
     name = name[len(name)-1].split(".")[0]
     name = "D"+ str(pIndex) + "-" + name
-    wList = []
-    rList = []
+    wList = ""
+    rList = ""
     for word in pList:
-        wList.append(word)
+        wList = wList + word + " "
     for wor in pRef:
-        rList.append(wor)
+        rList = rList + wor + " "
     data = {
    'name' : name,
    'words' : wList,
-   'ref' : rList
+   'ref' : rList,
+   'rute' : pFilePath
     }
     with open(pDicPath + "/" + name + '.json', 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f,indent=4)
     
     
 
