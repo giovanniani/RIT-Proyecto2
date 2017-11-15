@@ -135,7 +135,7 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
    'rute' : pFilePath
     }
     with open(pDicPath + "/" + name + '.json', 'w') as f:
-        json.dump(data, f,indent=4)
+        json.dump(data, f,indent=4, encoding='latin1')
     
     
 
