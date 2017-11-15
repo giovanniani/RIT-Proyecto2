@@ -130,9 +130,9 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
         rList = rList + wor + " "
     data = {
    'name' : name,
-   'words' : wList,
+   'texto' : wList,
    'ref' : rList,
-   'rute' : pFilePath
+   'ruta' : pFilePath
     }
     with open(pDicPath + "/" + name + '.json', 'w') as f:
         json.dump(data, f,indent=4, encoding='latin1')
@@ -147,7 +147,7 @@ def main(pPath):
         text = examineFile(fileDir)
         textSW = removeStopWords(sWPath,text[0])
         stemmed = stemmer(textSW)
-        saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
+##        saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
         createJSON(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
         
 
