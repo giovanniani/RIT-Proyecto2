@@ -19,7 +19,8 @@ public class SearchEngine {
    Indexer indexer;
    Searcher searcher;
    
-   public SearchEngine()throws IOException{
+   public SearchEngine()throws IOException
+   {
         indexer = Indexer.getIndexer();//new Indexer(Routes.indexDir);
         searcher = Searcher.getSearcher();
    }

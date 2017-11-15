@@ -72,11 +72,19 @@ public class Indexer {
         
         Field textField = new Field(
                Constants.TEXTO,
-               new StringReader(doc.texto));
+               doc.texto,
+               Field.Store.YES,
+               Field.Index.NOT_ANALYZED);
+                
+                
+               //new StringReader(doc.texto));
         
         Field refField = new Field(
                Constants.REF,
-               new StringReader(doc.ref));
+               doc.ref,
+               Field.Store.YES,
+               Field.Index.NOT_ANALYZED);
+               //new StringReader(doc.ref));
         
         //index file name
         Field originalPath = new Field(
@@ -95,6 +103,10 @@ public class Indexer {
         document.add(refField);
         document.add(originalPath);
         document.add(sourcePath);
+        print("         -"+document.get(Constants.SOURCE_PATH));
+        print("         -"+document.get(Constants.ORIGINAL_PATH));
+        print("         -"+document.get(Constants.TEXTO));
+        print("         -"+document.get(Constants.REF));
         return document;
         }
     private int indexFile(File file) throws IOException, ParseException{

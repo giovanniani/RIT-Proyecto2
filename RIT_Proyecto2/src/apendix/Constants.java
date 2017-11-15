@@ -12,7 +12,7 @@ package apendix;
 public class Constants {
 	 public static final String REF="ref";
 	 public static final String TEXTO="texto";
-	 public static final String ORIGINAL_PATH="filename";
-	 public static final String SOURCE_PATH="filepath";
+	 public static final String ORIGINAL_PATH="original";
+	 public static final String SOURCE_PATH="source";
 	 public static final int MAX_SEARCH = 15;
 	}
