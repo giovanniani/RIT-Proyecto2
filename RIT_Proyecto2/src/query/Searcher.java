@@ -10,6 +10,7 @@ package query;
  * @author Usuario
  */
 import apendix.Constants;
+import apendix.Routes;
 import java.io.File;
 import java.io.IOException;
 
@@ -31,16 +32,21 @@ public class Searcher {
    IndexSearcher indexSearcher;
    QueryParser queryParser;
    Query query;
+   private static Searcher searcher=null;
 
-   public Searcher(String indexDirectoryPath) throws IOException{
+   private Searcher() throws IOException{
       Directory indexDirectory = 
-      FSDirectory.open(new File(indexDirectoryPath));
+      FSDirectory.open(new File(Routes.indexDir));
       indexSearcher = new IndexSearcher(indexDirectory);
       queryParser = new QueryParser(Version.LUCENE_36,
          Constants.TEXTO,
          new StandardAnalyzer(Version.LUCENE_36));
    }
-
+   public static Searcher getSearcher() throws IOException{
+       if (searcher==null) searcher= new Searcher();
+       return searcher;
+       
+    }
    public TopDocs search( String searchQuery) 
       throws IOException, ParseException{
       query = queryParser.parse(searchQuery);

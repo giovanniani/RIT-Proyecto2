@@ -21,6 +21,7 @@ public class Doc {
     public String ref="";
     public String originalPath="";
     public String sourcePath="";
+    public JSONObject json;
     public Doc(String json)
     {
         parseJson(json);
@@ -28,15 +29,15 @@ public class Doc {
     public Doc(File file) throws IOException
     {
         sourcePath=file.getCanonicalPath();
+        System.out.println("---------------"+file.getCanonicalPath());
         parseJson(new String(Files.readAllBytes(Paths.get(file.getPath()))));
     }
-    public void parseJson(String json){
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(json);
+    public void parseJson(String jsonText){
+        json = (JSONObject) JSONValue.parse(jsonText);
         try{
-         texto=(String) jsonObject.get("words");
-         ref=(String) jsonObject.get("ref");
-         originalPath=(String) jsonObject.get("route");
-         
+            texto=(String) json.get("words");
+            ref=(String) json.get("ref");
+            originalPath=(String) json.get("rute");
         }
         catch(Exception e){System.out.println("Mensaje de error en el parseo del archivo JSON.\n"+e.getMessage());}
     }

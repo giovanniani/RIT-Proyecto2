@@ -20,27 +20,29 @@ public class SearchEngine {
    Searcher searcher;
    
    public SearchEngine()throws IOException{
-        indexer = new Indexer(Routes.indexDir);
+        indexer = Indexer.getIndexer();//new Indexer(Routes.indexDir);
+        searcher = Searcher.getSearcher();
    }
-   public int index(String[] dirs) throws IOException{
+   public int index(String[] dirs) throws IOException, ParseException{
        int cantidad=0;
        /*for (String s:dirs){
            //cantidad+=updateIndex(s);
            proccessDir(s);
        }*/
        cantidad=updateIndex();
+       print("A");
        return cantidad;
    }
    private void proccessDir(String s){
        //procesar el directorio ingresador y ponerlo en programData
    }
-   private int updateIndex()throws IOException{
+   private int updateIndex()throws IOException, ParseException{
         int cantidad;
         long inicio = System.currentTimeMillis();
         //Routes.setDataDir(dataDir);
         cantidad = indexer.addToIndex(Routes.dataDir, new TextFileFilter());
         long fin = System.currentTimeMillis();
-        indexer.close();
+        indexer.commit();
         long totalIndexacion=fin-inicio;
         return cantidad;
    }
@@ -48,7 +50,7 @@ public class SearchEngine {
        return TopDocsToArray(doSearch(query));
     }
     private TopDocs doSearch(String query) throws IOException, ParseException{
-        searcher = new Searcher(Routes.indexDir);
+        
         TopDocs hits = searcher.search(query);
         return hits;
    }
@@ -65,6 +67,10 @@ public class SearchEngine {
         searcher.close();
         return null;
    }
+    public void clean() throws IOException {
+        indexer.clean();
+    }
+   public void print(String s){System.out.println(s);}
     
     /*
       public static void main(String[] args) {
@@ -89,7 +95,7 @@ public class SearchEngine {
     			e.printStackTrace();
     		}
     		try {
-    			br.close();
+    			br.commit();
     		} catch (IOException e1) {
     			// TODO Auto-generated catch block
     			e1.printStackTrace();
