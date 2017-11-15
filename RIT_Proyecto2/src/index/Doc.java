@@ -29,7 +29,6 @@ public class Doc {
     public Doc(File file) throws IOException
     {
         sourcePath=file.getCanonicalPath();
-        System.out.println("---------------"+file.getCanonicalPath());
         parseJson(new String(Files.readAllBytes(Paths.get(file.getPath()))));
     }
     public void parseJson(String jsonText){

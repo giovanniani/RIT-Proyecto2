@@ -30,7 +30,6 @@ public class SearchEngine {
            proccessDir(s);
        }*/
        cantidad=updateIndex();
-       print("A");
        return cantidad;
    }
    private void proccessDir(String s){
@@ -47,28 +46,34 @@ public class SearchEngine {
         return cantidad;
    }
     public ArrayList<ArrayList> search(String query)throws IOException, ParseException{
+       TopDocsToArray(doSearch("filename:Pagina1"));
        return TopDocsToArray(doSearch(query));
     }
     private TopDocs doSearch(String query) throws IOException, ParseException{
-        
+        print("Consulta: \""+query+"\"");
         TopDocs hits = searcher.search(query);
         return hits;
    }
     
    public ArrayList<ArrayList> TopDocsToArray(TopDocs hits)throws IOException, ParseException{
-        ArrayList<String> docInfo= new ArrayList();
+        ArrayList<String> docInfo;//= new ArrayList();
         ArrayList<ArrayList> results= new ArrayList();
+        System.out.println("Resultado:");
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
+           docInfo= new ArrayList();
            Document doc = searcher.getDocument(scoreDoc);
-           
+           docInfo.add(doc.get(Constants.ORIGINAL_PATH));
+           docInfo.add(scoreDoc.score + " ");
            System.out.print("Score: "+ scoreDoc.score + " ");
            System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
+           results.add(docInfo);
         }
-        searcher.close();
-        return null;
+        //searcher.close();
+        return results;
    }
     public void clean() throws IOException {
         indexer.clean();
+        
     }
    public void print(String s){System.out.println(s);}
     

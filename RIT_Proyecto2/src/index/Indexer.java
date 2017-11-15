@@ -54,28 +54,29 @@ public class Indexer {
     }
     
     public boolean exists(Document document) throws IOException, ParseException{
-        print("exists?");
-        print(Constants.ORIGINAL_PATH+":"+document.getFieldable(Constants.ORIGINAL_PATH));
-        TopDocs results=Searcher.getSearcher().search(Constants.ORIGINAL_PATH+":"+document.getFieldable(Constants.ORIGINAL_PATH));
-        print("\t\tRepeticiones: "+results.totalHits+"");
+        //print("exists?");
+        String query=Constants.ORIGINAL_PATH+":"+document.get(Constants.ORIGINAL_PATH);
+        //query=Constants.TEXTO+":"+"textopalabra1";
+        //print("Consulta de existencia de archivos: \""+document.get(Constants.ORIGINAL_PATH)+"\"");
+        TopDocs results=Searcher.getSearcher().search(query);
+        print("\t\tExistencias: "+results.totalHits+"");
+        //return false;
         return results.totalHits!=0;
     }
     
     private Document getDocument(File file) throws IOException{
-        print("getDocument");
         Document document = new Document();
         //index file contents
         //String json=new String(Files.readAllBytes(Paths.get(file.getPath())));
         Doc doc= new Doc(file);
-        print("orgPath: "+doc.originalPath);
-        print("soucePath: "+doc.sourcePath);
+        
         Field textField = new Field(
                Constants.TEXTO,
                new StringReader(doc.texto));
         
         Field refField = new Field(
-               Constants.TEXTO,
-               new StringReader(doc.texto));
+               Constants.REF,
+               new StringReader(doc.ref));
         
         //index file name
         Field originalPath = new Field(
@@ -94,20 +95,25 @@ public class Indexer {
         document.add(refField);
         document.add(originalPath);
         document.add(sourcePath);
-        print("Added"); 
         return document;
         }
-    private void indexFile(File file) throws IOException, ParseException{
+    private int indexFile(File file) throws IOException, ParseException{
         System.out.println("Indexing "+file.getCanonicalPath());
         Document document = getDocument(file);
-        if (!exists(document)) writer.addDocument(document);
-        else{print("Documento \n\t\t"+file.getCanonicalPath()+" ya indexado");}
+        if (!exists(document)){ 
+            writer.addDocument(document); 
+            return 1;
+        }
+        else{
+            print("Documento \n\t\t"+file.getCanonicalPath()+" ya indexado"); 
+            return 0;
+        }
     }
     public int addToIndex(String dataDirPath, FileFilter filter)
         throws IOException, ParseException{
         //get all files in the data directory
+        int cantidad=0;
         File[] files = new File(dataDirPath).listFiles();
-        print(files.length+"");
         for (File file : files) {
         if(!file.isDirectory()
         && !file.isHidden()
@@ -116,13 +122,15 @@ public class Indexer {
         && filter.accept(file)
         ){
             //System.out.println(file.getCanonicalPath());
-            indexFile(file);
+            cantidad+=indexFile(file);
         }
         }
-        return writer.numDocs();
+        return cantidad;
     }
     public void clean() throws IOException {
+        writer.deleteUnusedFiles();
         writer.deleteAll();
+        writer.commit();
     }
     public void commit() throws CorruptIndexException, IOException{
         writer.commit();
@@ -130,5 +138,7 @@ public class Indexer {
     public void close() throws CorruptIndexException, IOException{
         writer.close();
     }
-   public void print(String s){System.out.println(s);}
+   public void print(String s){
+       System.out.println(s);
+   }
 }

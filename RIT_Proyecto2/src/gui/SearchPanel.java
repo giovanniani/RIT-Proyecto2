@@ -6,11 +6,13 @@
 package gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.TopDocs;
 import query.SearchEngine;
 
 /**
@@ -27,6 +29,31 @@ public class SearchPanel extends javax.swing.JFrame {
         initComponents();
         engine= new SearchEngine();
     }
+    public void index(){
+        try {
+            mensaje.setText("");
+            int cantidad=engine.index(null);
+            mensaje.setText("Se han indexado "+cantidad+" archivos nuevos.");
+        } catch (IOException ex) {
+            //showMessage("Error","Error io:\n"+ex.getMessage()+"\n"+ex.getStackTrace(),0);
+            print(ex.getMessage());
+        } catch (ParseException ex) {
+            showMessage("Error","Error en el parseo:\n"+ex.getMessage(),0);
+        }
+    }
+    public void search(String query){
+        try {
+            mensajeResultado.setText("");
+            mensaje.setText("");
+            ArrayList<ArrayList> docs=engine.search(query);
+            mensajeResultado.setText("Se encontrado"+docs.size()+" archivos relevantes.");
+        } catch (IOException ex) {
+            Logger.getLogger(SearchPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(SearchPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void showMessage(String titulo,String descripcion,int icon){
         JOptionPane.showMessageDialog(this,descripcion,titulo, icon);
     }
@@ -52,6 +79,8 @@ public class SearchPanel extends javax.swing.JFrame {
         txtRuta = new javax.swing.JTextField();
         btnIndexar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        mensaje = new javax.swing.JLabel();
+        mensajeResultado = new javax.swing.JLabel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -103,6 +132,10 @@ public class SearchPanel extends javax.swing.JFrame {
             }
         });
 
+        mensaje.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+
+        mensajeResultado.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -114,31 +147,38 @@ public class SearchPanel extends javax.swing.JFrame {
                         .addComponent(txtRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
                         .addComponent(btnIndexar)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLimpiar)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnLimpiar))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                                .addComponent(btnBuscar)))
-                        .addGap(35, 35, 35))))
+                        .addComponent(txtQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addComponent(btnBuscar)
+                        .addGap(35, 35, 35))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(mensajeResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnLimpiar)
-                .addGap(8, 8, 8)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnIndexar))
-                .addGap(67, 67, 67)
+                    .addComponent(btnIndexar)
+                    .addComponent(btnLimpiar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscar))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mensajeResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -166,7 +206,7 @@ public class SearchPanel extends javax.swing.JFrame {
     }//GEN-LAST:event_txtQueryActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        
+        search(txtQuery.getText());
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRutaActionPerformed
@@ -174,14 +214,7 @@ public class SearchPanel extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRutaActionPerformed
 
     private void btnIndexarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndexarActionPerformed
-        try {
-            engine.index(null);
-        } catch (IOException ex) {
-            //showMessage("Error","Error io:\n"+ex.getMessage()+"\n"+ex.getStackTrace(),0);
-            print(ex.getMessage());
-        } catch (ParseException ex) {
-            showMessage("Error","Error en el parseo:\n"+ex.getMessage(),0);
-        }
+        index();
     }//GEN-LAST:event_btnIndexarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -201,6 +234,8 @@ public class SearchPanel extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel mensaje;
+    private javax.swing.JLabel mensajeResultado;
     private javax.swing.JTextField txtQuery;
     private javax.swing.JTextField txtRuta;
     // End of variables declaration//GEN-END:variables

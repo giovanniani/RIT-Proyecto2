@@ -39,7 +39,7 @@ public class Searcher {
       FSDirectory.open(new File(Routes.indexDir));
       indexSearcher = new IndexSearcher(indexDirectory);
       queryParser = new QueryParser(Version.LUCENE_36,
-         Constants.TEXTO,
+         Constants.REF,
          new StandardAnalyzer(Version.LUCENE_36));
    }
    public static Searcher getSearcher() throws IOException{
