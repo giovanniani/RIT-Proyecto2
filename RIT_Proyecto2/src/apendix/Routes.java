@@ -21,6 +21,8 @@ public final class Routes {
     public static String chromePath="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
     public static String indexDir = "C:\\lucene-3.6.2\\ProductIndex";
     public static String dataDir = "C:\\lucene-3.6.2\\ProductDataPrueba";
+    public static String stopWords = "C:\\lucene-3.6.2";
+    
 
     public static void setMainDir(String mainDir) {
         Routes.mainDir = mainDir;

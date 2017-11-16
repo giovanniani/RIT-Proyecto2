@@ -154,7 +154,7 @@ public class Indexer {
     
     public boolean processCollection(String ruta) throws IOException
     {
-        String[] cmd = {Constants.ScriptCommand,Routes.scriptPath,ruta,};
+        String[] cmd = {Constants.ScriptCommand,Routes.scriptPath,ruta,Routes.stopWords,Routes.dataDir};
         Process pr = Runtime.getRuntime().exec(cmd);
 
         BufferedReader bfr = new BufferedReader(new InputStreamReader(pr.getInputStream()));

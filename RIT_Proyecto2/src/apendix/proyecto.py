@@ -5,13 +5,18 @@ def main(ruta):
                     #indica que todo funciono correctamente
 
 try:
-    route=sys.argv[1]
+    libraryRoute=sys.argv[1]
+    stopRoute=sys.argv[2]
+    dicRoute=sys.argv[3]
     
     if __name__ == '__main__':
-        main(route)
-        
+        main(libraryRoute)
+        stopRoute
+        dicRoute
     else:
-        print("*error*")    #indica que hubo un error
+        raise ValueError()    
+        
+    
 except:
     print("*error*")        #indica que hubo un error
     
