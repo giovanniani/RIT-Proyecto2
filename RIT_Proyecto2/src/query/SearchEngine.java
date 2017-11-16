@@ -27,9 +27,12 @@ public class SearchEngine {
    public int index(String[] dirs) throws IOException, ParseException{
        int cantidad=0;
        boolean result=true;
-       for (String s:dirs){
+       String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
+       for (String s:dirs2){
            //cantidad+=updateIndex(s);
+           System.out.println("Procesando coleccion\n\t\t"+s);
            result &=indexer.processCollection(s);
+           System.out.println("Procesado finalizado");
        }
        if (result)
        {
@@ -73,7 +76,7 @@ public class SearchEngine {
            docInfo.add(doc.get(Constants.ORIGINAL_PATH));
            docInfo.add(scoreDoc.score + " ");
            System.out.print("Score: "+ scoreDoc.score + " ");
-           System.out.println("HTML: "+ doc.get(""));
+           System.out.println("HTML: "+ doc.get(Constants.ORIGINAL_PATH));
            //System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
            results.add(docInfo);
         }

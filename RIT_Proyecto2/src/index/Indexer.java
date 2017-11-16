@@ -62,11 +62,11 @@ public class Indexer {
     
     public boolean exists(Document document) throws IOException, ParseException{
         //print("exists?");
-        String query=Constants.ORIGINAL_PATH+":"+document.get(Constants.ORIGINAL_PATH);
+        String query=Constants.ORIGINAL_PATH+":\""+document.get(Constants.ORIGINAL_PATH)+"\"";
         //query=Constants.TEXTO+":"+"textopalabra1";
-        print("Consulta de existencia de archivos: \""+query+"\"");
+        //print("Consulta de existencia de archivos: \""+query+"\"");
         TopDocs results=Searcher.getSearcher().search(query);
-        print("\t\tExistencias: "+results.totalHits+"");
+        //print("\t\tExistencias: "+results.totalHits+"");
         //return false;
         return results.totalHits!=0;
     }
@@ -95,13 +95,13 @@ public class Indexer {
         
         Field originalPath = new Field(
                Constants.ORIGINAL_PATH,
-               doc.originalPath,
+               "\""+doc.originalPath+"\"",
                Field.Store.YES,
                Field.Index.NOT_ANALYZED);
         
         Field sourcePath = new Field(
                Constants.SOURCE_PATH,
-               doc.sourcePath,
+               "\""+doc.sourcePath+"\"",
                Field.Store.YES,
                Field.Index.NOT_ANALYZED);
         
@@ -109,14 +109,14 @@ public class Indexer {
         document.add(refField);
         document.add(originalPath);
         document.add(sourcePath);
-        print("        -"+document.get(Constants.SOURCE_PATH));
-        print("        -"+document.get(Constants.ORIGINAL_PATH));
-        print("        -"+document.get(Constants.TEXTO));
-        print("        -"+document.get(Constants.REF));
+        //print("        -"+document.get(Constants.SOURCE_PATH));
+        //print("        -"+document.get(Constants.ORIGINAL_PATH));
+        //print("        -"+document.get(Constants.TEXTO));
+        //print("        -"+document.get(Constants.REF));
         return document;
         }
     private int indexFile(File file) throws IOException, ParseException{
-        System.out.println("Indexing "+file.getCanonicalPath());
+        //System.out.println("Indexing "+file.getCanonicalPath());
         Document document = getDocument(file);
         if (!exists(document)){ 
             writer.addDocument(document);
@@ -154,16 +154,16 @@ public class Indexer {
     
     public boolean processCollection(String ruta) throws IOException
     {
-        String[] cmd = {Constants.ScriptCommand,Routes.scriptPath,ruta,Routes.stopWords,Routes.dataDir};
+        String[] cmd = {Constants.ScriptCommand,Routes.scriptPath,ruta+">"+Routes.stopWords+">"+Routes.dataDir};
+        for (String s: cmd){System.out.println(s);}
+        
         Process pr = Runtime.getRuntime().exec(cmd);
-
+        
         BufferedReader bfr = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line = "",output="";
-        while((line = bfr.readLine()) != null) 
-            {output+=line+"\n";}
-        if (output.contains(Constants.okFlag)) 
-            return true;
-        return false;
+        while((line = bfr.readLine()) != null) {output+=line+"\n"; }
+        System.out.println("Script Output:\n"+output);
+        return (output.contains(Constants.okFlag));
     }
     
     public String size() {

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #python 2.7.13
 
-
+import sys
 import codecs
 import snowballstemmer
 import re
@@ -24,7 +24,7 @@ def getPaths(pPath):    #recibe la ruta del fichero original y devuelve todas la
         onlyFiles = [f for f in listdir(x[0]) if isfile(join(x[0], f))]
         for fil in onlyFiles:
             if fil.endswith(".htm"):
-                allPaths.append(x[0] + "/" + fil)
+                allPaths.append(x[0] + "\\" + fil)
     return allPaths
     
 def examineFile(pFile):
@@ -72,7 +72,7 @@ def examineFile(pFile):
 def removeStopWords(pPath,pList):
     stopWords = []
     dic2 = {}
-    f = open(pPath + "/" + "stopwords.txt", "r")
+    f = open(pPath + "\\" + "stopwords.txt", "r")
     for line in f.readlines():
         line = line.decode('utf8')
         stopWords.append(line.rstrip("\n\r"))
@@ -93,10 +93,10 @@ def stemmer(pList):
     return stemmedWords
 
 def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
-    name = pFilePath.split("/")
+    name = pFilePath.split("\\")
     name = name[len(name)-1].split(".")[0]
     name = "D"+ str(pIndex) + "-" + name
-    f = open(pDicPath + "/" + name + "-dicionary.txt", "w+")
+    f = open(pDicPath + "\\" + name + "-dicionary.txt", "w+")
     f.write(name + "\n")
     for i in range(0,len(pList)-2,1):
         data = list(pList)[i]
@@ -118,7 +118,7 @@ def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
 
 def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
     
-    name = pFilePath.split("/")
+    name = pFilePath.split("\\")
     name = name[len(name)-1].split(".")[0]
     name = "D"+ str(pIndex) + "-" + name
     wList = ""
@@ -129,11 +129,11 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
         rList = rList + wor + " "
     data = {
    'name' : name,
-   'words' : wList,
+   'texto' : wList,
    'ref' : rList,
-   'rute' : pFilePath
+   'ruta' : pFilePath
     }
-    with open(pDicPath + "/" + name + '.json', 'w') as f:
+    with open(pDicPath + "\\" + name + '.json', 'w') as f:
         json.dump(data, f,indent=4, encoding='latin1')
     
     
@@ -146,20 +146,29 @@ def main(pPath,pDicPath,pSWPath):
         stemmed = stemmer(textSW)
         saveDictionary(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
         createJSON(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
-        
+    print("*ok*")
 
-    
+#s="""
+libraryRoute="D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"
+stopRoute="C:\\lucene-3.6.2"
+dicRoute="C:\\lucene-3.6.2\\ProductDataPrueba"
 try:
-    libraryRoute=sys.argv[1]
-    stopRoute=sys.argv[2]
-    dicRoute=sys.argv[3]
-    
+    #libraryRoute="D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"#sys.argv[1]
+    #stopRoute="C:\\lucene-3.6.2"#sys.aArgv[2]
+    #dicRoute="C:\\lucene-3.6.2\\ProductDataPrueba"#sys.argv[3]
+    params=sys.argv[1].split(">")
+    libraryRoute=params[0]
+    stopRoute=params[1]
+    dicRoute=params[2]
+
+    print("Parametros: \n\t"+libraryRoute+"\n\t"+stopRoute+"\n\t"+dicRoute)
     if __name__ == '__main__':
-        main(libraryRoute,stopRoute,dicRoute)
+        #main(libraryRoute,dicRoute,stopRoute)
+        print("*ok*")
     else:
         raise ValueError()    
-        
-    
 except:
+    #print("Parametros: \n\t"+libraryRoute+"\n\t"+stopRoute+"\n\t"+dicRoute)
     print("*error*")        #indica que hubo un error
+#"""
     
