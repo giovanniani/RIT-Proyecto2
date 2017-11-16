@@ -26,12 +26,16 @@ public class SearchEngine {
    }
    public int index(String[] dirs) throws IOException, ParseException{
        int cantidad=0;
-       /*for (String s:dirs){
+       boolean result=true;
+       for (String s:dirs){
            //cantidad+=updateIndex(s);
-           proccessDir(s);
-       }*/
-       cantidad=updateIndex();
-       return cantidad;
+           result &=indexer.processCollection(s);
+       }
+       if (result)
+       {
+            return updateIndex();
+       }
+       return 0;
    }
    private void proccessDir(String s){
        //procesar el directorio ingresador y ponerlo en programData
@@ -47,10 +51,12 @@ public class SearchEngine {
         return cantidad;
    }
     public ArrayList<ArrayList> search(String query)throws IOException, ParseException{
-       TopDocsToArray(doSearch("filename:Pagina1"));
+       System.out.println("Canditad de documentos: "+indexer.size());
+       //TopDocsToArray(doSearch("filename:Pagina1"));
        return TopDocsToArray(doSearch(query));
     }
     private TopDocs doSearch(String query) throws IOException, ParseException{
+        searcher= Searcher.getSearcher();
         print("Consulta: \""+query+"\"");
         TopDocs hits = searcher.search(query);
         return hits;
@@ -60,16 +66,18 @@ public class SearchEngine {
         ArrayList<String> docInfo;//= new ArrayList();
         ArrayList<ArrayList> results= new ArrayList();
         System.out.println("Resultado:");
+        System.out.println("\t\tSe han encontrado "+hits.scoreDocs.length+" documentos relevantes.");
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
            docInfo= new ArrayList();
            Document doc = searcher.getDocument(scoreDoc);
            docInfo.add(doc.get(Constants.ORIGINAL_PATH));
            docInfo.add(scoreDoc.score + " ");
            System.out.print("Score: "+ scoreDoc.score + " ");
-           System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
+           System.out.println("HTML: "+ doc.get(""));
+           //System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
            results.add(docInfo);
         }
-        //searcher.close();
+        searcher.close();
         return results;
    }
     public void clean() throws IOException {

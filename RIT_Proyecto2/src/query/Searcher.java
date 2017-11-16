@@ -43,12 +43,11 @@ public class Searcher {
          new StandardAnalyzer(Version.LUCENE_36));
    }
    public static Searcher getSearcher() throws IOException{
-       if (searcher==null) searcher= new Searcher();
-       return searcher;
-       
+       return searcher= new Searcher();
     }
    public TopDocs search( String searchQuery) 
       throws IOException, ParseException{
+      
       query = queryParser.parse(searchQuery);
       return search(query);//indexSearcher.search(query, Constants.MAX_SEARCH);
    }

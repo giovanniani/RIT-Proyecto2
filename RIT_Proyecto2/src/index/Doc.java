@@ -34,9 +34,9 @@ public class Doc {
     public void parseJson(String jsonText){
         json = (JSONObject) JSONValue.parse(jsonText);
         try{
-            texto=(String) json.get("words");
+            texto=(String) json.get("texto");
             ref=(String) json.get("ref");
-            originalPath=(String) json.get("rute");
+            originalPath=(String) json.get("ruta");
         }
         catch(Exception e){System.out.println("Mensaje de error en el parseo del archivo JSON.\n"+e.getMessage());}
     }

@@ -15,4 +15,9 @@ public class Constants {
 	 public static final String ORIGINAL_PATH="original";
 	 public static final String SOURCE_PATH="source";
 	 public static final int MAX_SEARCH = 15;
+         
+         //------------------------------------------------
+	 public static final String okFlag="*ok*";
+         public static final String errorFlag="*error*";
+         public static final String ScriptCommand="python";
 	}
