@@ -138,16 +138,14 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
     
     
 
-def main(pPath):
-    sWPath = input(u"Ingrese la ubicación del archivo de stopwords: \n")
-    dicPath = input(u"Ingrese la ubicación donde se guardará los diccionarios de palabras: \n")
+def main(pPath,pDicPath,pSWPath):
     files = getPaths(pPath)
     for fileDir in files:
         text = examineFile(fileDir)
-        textSW = removeStopWords(sWPath,text[0])
+        textSW = removeStopWords(pSWPath,text[0])
         stemmed = stemmer(textSW)
-        saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
-        createJSON(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
+        saveDictionary(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
+        createJSON(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
         
 
     
@@ -157,9 +155,7 @@ try:
     dicRoute=sys.argv[3]
     
     if __name__ == '__main__':
-        main(libraryRoute)
-        stopRoute
-        dicRoute
+        main(libraryRoute,stopRoute,dicRoute)
     else:
         raise ValueError()    
         

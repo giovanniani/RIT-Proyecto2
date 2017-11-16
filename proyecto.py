@@ -114,7 +114,6 @@ def saveDictionary(pFilePath,pList,pRef,pDicPath,pIndex):
     data = data.encode('utf-8')
     f.write(data)    
     f.close()
-    print(pDicPath + "/" + name + "-dicionary.txt>"+pFilePath)
 
 
 def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
@@ -130,25 +129,23 @@ def createJSON(pFilePath,pList,pRef,pDicPath,pIndex):
         rList = rList + wor + " "
     data = {
    'name' : name,
-   'texto' : wList,
+   'words' : wList,
    'ref' : rList,
-   'ruta' : pFilePath
+   'rute' : pFilePath
     }
     with open(pDicPath + "/" + name + '.json', 'w') as f:
         json.dump(data, f,indent=4, encoding='latin1')
     
     
 
-def main(pPath):
-    sWPath = input(u"Ingrese la ubicación del archivo de stopwords: \n")
-    dicPath = input(u"Ingrese la ubicación donde se guardará los diccionarios de palabras: \n")
+def main(pPath,pDicPath,pSWPath):
     files = getPaths(pPath)
     for fileDir in files:
         text = examineFile(fileDir)
-        textSW = removeStopWords(sWPath,text[0])
+        textSW = removeStopWords(pSWPath,text[0])
         stemmed = stemmer(textSW)
-##        saveDictionary(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
-        createJSON(fileDir,stemmed,text[1],dicPath,files.index(fileDir))
+        saveDictionary(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
+        createJSON(fileDir,stemmed,text[1],pDicPath,files.index(fileDir))
         
 
     
