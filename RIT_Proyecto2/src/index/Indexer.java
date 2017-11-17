@@ -47,13 +47,15 @@ public class Indexer {
     private static Indexer indexer;
     
     private Indexer() throws IOException{
-        //this directory will contain the indexes
+        initializeIndexer();
+    }
+    private void initializeIndexer() throws IOException{
+               //this directory will contain the indexes
         Directory indexDirectory = FSDirectory.open(new File(Routes.indexDir));
         //create the indexer
         writer = new IndexWriter(indexDirectory,
-        new StandardAnalyzer(Version.LUCENE_36),true,
-        IndexWriter.MaxFieldLength.UNLIMITED);
-
+        new StandardAnalyzer(Version.LUCENE_36),false,
+        IndexWriter.MaxFieldLength.UNLIMITED); 
     }
     public static Indexer getIndexer() throws IOException{
         if (indexer==null) indexer= new Indexer();
@@ -147,9 +149,11 @@ public class Indexer {
         return cantidad;
     }
     public void clean() throws IOException {
+        
         writer.deleteUnusedFiles();
         writer.deleteAll();
-        writer.commit();
+        writer.close();
+        this.initializeIndexer();
     }
     
     public boolean processCollection(String ruta) throws IOException

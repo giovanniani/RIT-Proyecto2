@@ -154,7 +154,7 @@ public class SearchPanel extends javax.swing.JFrame {
         }
     }
     public ArrayList<String> getPaths(){
-        JFileChooser chooser = new JFileChooser(Routes.proyectDir);
+        JFileChooser chooser = new JFileChooser("C:/");
         chooser.setMultiSelectionEnabled(true);
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);

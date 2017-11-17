@@ -28,18 +28,19 @@ public class SearchEngine {
    public int index(String[] dirs) throws IOException, ParseException{
        int cantidad=0;
        boolean result=true;
-       String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
+       //String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
        for (String s:dirs){
            s=s.trim();
-           //cantidad+=updateIndex(s);
+           Routes.setDataDir(s);
+           cantidad+=updateIndex();
            System.out.println("Procesando coleccion\n\t\t\""+s+"\"");
-           //result &=indexer.processCollection(s);
+           //updateIndex();//result &=indexer.processCollection(s);
            System.out.println("Procesado finalizado");
        }
-       if (result)
+       /*if (result)
        {
             return updateIndex();
-       }
+       }*/
        return 0;
    }
    private void proccessDir(String s){
