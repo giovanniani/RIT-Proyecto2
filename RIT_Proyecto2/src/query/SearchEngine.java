@@ -28,7 +28,8 @@ public class SearchEngine {
    public int index(String[] dirs) throws IOException, ParseException{
        int cantidad=0;
        boolean result=true;
-       String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
+       //String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
+       String[] dirs2={Routes.dataDir};
        for (String s:dirs){
            s=s.trim();
            //cantidad+=updateIndex(s);
