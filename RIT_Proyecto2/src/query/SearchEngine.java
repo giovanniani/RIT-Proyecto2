@@ -5,6 +5,7 @@ import apendix.TextFileFilter;
 import apendix.Routes;
 import index.Indexer;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -28,10 +29,11 @@ public class SearchEngine {
        int cantidad=0;
        boolean result=true;
        String[] dirs2={"D:\\Biblioteca\\Dropbox\\Docs Tec\\Sexto Semestre\\Recuperacion de Informacion Textual\\Proyectos\\Geografia"};
-       for (String s:dirs2){
+       for (String s:dirs){
+           s=s.trim();
            //cantidad+=updateIndex(s);
-           System.out.println("Procesando coleccion\n\t\t"+s);
-           result &=indexer.processCollection(s);
+           System.out.println("Procesando coleccion\n\t\t\""+s+"\"");
+           //result &=indexer.processCollection(s);
            System.out.println("Procesado finalizado");
        }
        if (result)
@@ -50,7 +52,6 @@ public class SearchEngine {
         cantidad = indexer.addToIndex(Routes.dataDir, new TextFileFilter());
         long fin = System.currentTimeMillis();
         indexer.commit();
-        long totalIndexacion=fin-inicio;
         return cantidad;
    }
     public ArrayList<ArrayList> search(String query)throws IOException, ParseException{
@@ -69,15 +70,19 @@ public class SearchEngine {
         ArrayList<String> docInfo;//= new ArrayList();
         ArrayList<ArrayList> results= new ArrayList();
         System.out.println("Resultado:");
-        System.out.println("\t\tSe han encontrado "+hits.scoreDocs.length+" documentos relevantes.");
+        System.out.println("\tSe han encontrado "+hits.scoreDocs.length+" documentos relevantes.");
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
            docInfo= new ArrayList();
            Document doc = searcher.getDocument(scoreDoc);
-           docInfo.add(doc.get(Constants.ORIGINAL_PATH));
-           docInfo.add(scoreDoc.score + " ");
+           String ruta=doc.get(Constants.ORIGINAL_PATH).replaceAll("\"", "");
+           File archivo= new File(ruta);
+           
+           //String[] secciones=ruta.split(ruta, 0)
+           docInfo.add(scoreDoc.score + "");
+           docInfo.add(archivo.getName());
+           docInfo.add(doc.get(Constants.ORIGINAL_PATH).replaceAll("\"", ""));
            System.out.print("Score: "+ scoreDoc.score + " ");
            System.out.println("HTML: "+ doc.get(Constants.ORIGINAL_PATH));
-           //System.out.println("File: "+ doc.get(Constants.ORIGINAL_PATH));
            results.add(docInfo);
         }
         searcher.close();
@@ -88,55 +93,4 @@ public class SearchEngine {
         
     }
    public void print(String s){System.out.println(s);}
-    
-    /*
-      public static void main(String[] args) {
-	   SearchEngine tester;
-      
-      try {
-    	  
-    	  tester = new SearchEngine();
-    	  tester.createIndex();
-    	  //Search text here
-    	  
-    	  
-    	  BufferedReader br;
-    		String choice = "";
-    		System.out.println("***** Lucene Index, Search Tester ******");
-    		System.out.println("Enter the name to search:");
-    		
-    		br = new BufferedReader(new InputStreamReader(System.in));
-    		try {
-    			choice = br.readLine();
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    		try {
-    			br.commit();
-    		} catch (IOException e1) {
-    			// TODO Auto-generated catch block
-    			e1.printStackTrace();
-    		}
-    		
-    		//Optional for phrases (multi words)
-    		
-    	    //String[] searcharray = choice.split(" ");
-    	    //for (int i = 0; i < searcharray.length; i++)
-    	    //{
-    	    	//System.out.println("Search results for word " + (i+1) + ": " + searcharray[i]);
-    	    	//tester.search(searcharray[i]);
-    	    	tester.search(choice);
-    	    //}
-    		
-     		 //Uncomment below line for one word queries            
-    		
-    		 //tester.search(choice);
-
-         
-      } catch (IOException e) {
-         e.printStackTrace();
-      } catch (ParseException e) {
-         e.printStackTrace();
-      }
-   }*/
 }
